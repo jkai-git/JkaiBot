@@ -4,7 +4,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 client.once('ready', () => {
-	console.log('Ready!');
+	console.log(`Logged in as: ${client.user.tag}`);
 });
 
 client.on('message', message => {
@@ -14,6 +14,13 @@ client.on('message', message => {
 		message.channel.send('Pong.');
 	else if (message.content.startsWith(`${prefix}beep`))
 		message.channel.send('Boop.');
+	else if (message.content.startsWith(`${prefix}server`))
+		message.channel.send(`Server name: ${message.guild.name}\n`
+								  +`Server id: ${message.guild.id}\n`
+								  +`Server owner: ${message.guild.owner}\n`
+								  +`Total members: ${message.guild.memberCount}\n`
+								  +`Created at: ${message.guild.createdAt}\n`
+							  	  +`Region: ${message.guild.region}`);
 });
 
 client.login(token);

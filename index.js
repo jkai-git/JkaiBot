@@ -21,6 +21,11 @@ client.on('message', message => {
 								  +`Total members: ${message.guild.memberCount}\n`
 								  +`Created at: ${message.guild.createdAt}\n`
 							  	  +`Region: ${message.guild.region}`);
+	else if (message.content.startsWith(`${prefix}user`))
+		message.channel.send(`Nickname: ${message.author.username}\n`
+								  +`Tag: ${message.author.tag}\n`
+								  +`id: ${message.author.id}\n`
+								  +`Created at: ${message.author.createdAt}\n`);
 });
 
 client.login(token);

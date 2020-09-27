@@ -16,16 +16,16 @@ client.on('message', message => {
 		message.channel.send('Boop.');
 	else if (message.content.startsWith(`${prefix}server`))
 		message.channel.send(`Server name: ${message.guild.name}\n`
-								  +`Server id: ${message.guild.id}\n`
-								  +`Server owner: ${message.guild.owner}\n`
-								  +`Total members: ${message.guild.memberCount}\n`
-								  +`Created at: ${message.guild.createdAt}\n`
-							  	  +`Region: ${message.guild.region}`);
+							+`Server id: ${message.guild.id}\n`
+							+`Server owner: ${message.guild.owner}\n`
+							+`Total members: ${message.guild.memberCount}\n`
+							+`Created at: ${message.guild.createdAt}\n`
+							+`Region: ${message.guild.region}`);
 	else if (message.content.startsWith(`${prefix}user`))
 		message.channel.send(`Nickname: ${message.author.username}\n`
-								  +`Tag: ${message.author.tag}\n`
-								  +`id: ${message.author.id}\n`
-								  +`Created at: ${message.author.createdAt}\n`);
+							+`Tag: ${message.author.tag}\n`
+							+`id: ${message.author.id}\n`
+							+`Created at: ${message.author.createdAt}\n`);
 });
 
 client.login(token);

@@ -23,6 +23,15 @@ client.on('message', message => {
 
 	const args = message.content.slice(prefix.length).split(/\s+/);
 	const command = args.shift().toLowerCase();
+
+	id (!client.commands.has(command)) return;
+
+	try {
+		client.commands.get(command).execute(message, args);
+	} catch(error) {
+		console.error(error);
+		message.channel.send('There was an error trying to execute this command!');
+	}
 });
 
 client.login(token);

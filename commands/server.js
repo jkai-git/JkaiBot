@@ -1,6 +1,7 @@
 module.exports = {
 	name: 'server',
 	description: 'Informations about the server.',
+	guildOnly: true,
 	execute(message, args) {
 		message.channel.send(`Server name: ${message.guild.name}\n`
 							+`Server id: ${message.guild.id}\n`

@@ -1,6 +1,7 @@
 module.exports = {
 	name: 'kick',
 	description: 'Kick the mentioned user.',
+	guildOnly: true,
 	args: true,
 	usage: '<userTag>',
 	execute(message, args) {

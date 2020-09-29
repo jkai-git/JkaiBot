@@ -7,7 +7,7 @@ module.exports = {
 				const avatarList = memberCollection.map(member => {
 					return `${member.user.username}'s avatar: ${member.user.displayAvatarURL({ dynamic: true, size: 4096 })}`;
 				});
-				message.reply(avatarList);
+				message.channel.send(avatarList);
 			});
 			return;
 		}

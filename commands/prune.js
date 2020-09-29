@@ -1,6 +1,8 @@
 module.exports = {
 	name: 'prune',
 	description: 'Delete [1..99] amount of messages not older than 2 weeks in the channel.',
+	args: true,
+	usage: '<number[1..99]>',
 	execute(message, args) {
 		const amount = parseInt(args[0]) + 1;
 

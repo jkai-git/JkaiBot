@@ -27,6 +27,16 @@ client.on('message', message => {
 	if (!client.commands.has(commandName)) return;
 	const command = client.commands.get(commandName);
 
+	if (command.args && !args.length) {
+		let reply = 'No arguments were provided. :/';
+
+		if (command.usage) {
+			reply += `\nProper usage would be: \`${prefix}${command.name} ${command.usage}\``;
+		}
+
+		return message.channel.send(reply);
+	}
+
 	try {
 		command.execute(message, args);
 	} catch(error) {

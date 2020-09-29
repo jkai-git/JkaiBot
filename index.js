@@ -22,12 +22,13 @@ client.on('message', message => {
 	console.log(`${message.author.tag}: ${message.content}`);
 
 	const args = message.content.slice(prefix.length).split(/\s+/);
-	const command = args.shift().toLowerCase();
+	const commandName = args.shift().toLowerCase();
 
-	if (!client.commands.has(command)) return;
+	if (!client.commands.has(commandName)) return;
+	const command = client.commands.get(commandName);
 
 	try {
-		client.commands.get(command).execute(message, args);
+		command.execute(message, args);
 	} catch(error) {
 		console.error(error);
 		message.channel.send('There was an error trying to execute this command!');

@@ -4,6 +4,11 @@ module.exports = {
 	args: true,
 	usage: '<number[1..99]>',
 	execute(message, args) {
+		/*
+		TO-DO:
+			-research on permissions 'cause this command only works with additional permissions.
+		*/
+
 		const amount = parseInt(args[0]) + 1;
 
 		if (isNaN(amount)) {

@@ -55,8 +55,9 @@ client.on('message', message => {
 		const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
 
 		if (now < expirationTime) {
-			const timeLeft = (expirationTime - now) / 1000;
-			return message.channel.send(`Please wait ${timeLeft.toFixed(1)} more second(s) before using the \`${command.name}\` command.`);
+			const timeLeftString = ((expirationTime - now) / 1000).toFixed(1);
+			if (timeLeftString === '0.0') return message.channel.send(`Less than 0.1 seconds left before you can use the \`${command.name}\` command.`);
+			return message.channel.send(`Please wait ${timeLeftString} more second(s) before using the \`${command.name}\` command.`);
 		}
 	}
 

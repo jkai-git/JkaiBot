@@ -1,3 +1,4 @@
 -- !prune command doesn't work because of permission problems.
 -- !avatar command should be working different if it's in DM or Guild channel.
 -- reThink cooldown system.
+-- command types and type specific subdirectories.

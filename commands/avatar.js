@@ -2,7 +2,7 @@ module.exports = {
 	name: 'avatar',
 	description: 'Avatar lookup of mentioned users.',
 	aliases: ['pic', 'icon', 'pfp'],
-	usage: '(optional)<userTags> (optional)<@everyone>',
+	usage: '(optional)<userTags> (optional)<`@everyone`>',
 	execute(message, args) {
 		/*
 		TO-DO:

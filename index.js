@@ -40,7 +40,7 @@ client.on('message', message => {
 			reply += `\nProper usage would be: \`${config.prefix}${command.name} ${command.usage}\``;
 		}
 
-		return message.channel.send(reply);
+		return message.channel.send(reply, { disableMentions: 'all' });
 	}
 
 	if (!cooldowns.has(command.name)) {

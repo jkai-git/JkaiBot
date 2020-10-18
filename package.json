@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jkai-git/JkaiBot.git"
+    "url": "https://github.com/jkai-git/JkaiBot.git"
   },
   "keywords": [
     "jkaibot",
@@ -27,7 +27,7 @@
     "bufferutil": "^4.0.1",
     "discord.js": "^12.3.1",
     "ffmpeg-static": "^4.2.7",
-    "libsodium-wrappers": "^0.7.8",
+    "sodium": "^3.0.2",
     "utf-8-validate": "^5.0.2",
     "zlib-sync": "^0.1.7"
   }

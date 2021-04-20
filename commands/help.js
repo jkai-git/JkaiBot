@@ -7,6 +7,7 @@ module.exports = {
 		const data = [];
 		const { commands } = message.client;
 
+		// if no args, send list of all commands to DM
 		if (!args.length) {
 			data.push('List of all commands:');
 			data.push(commands.map(command => command.name).join(', '));
@@ -23,6 +24,7 @@ module.exports = {
 				});
 		}
 
+		// if args, detailed informations about the command
 		const commandName = args[0].toLowerCase();
 		const command = commands.get(commandName) || commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 

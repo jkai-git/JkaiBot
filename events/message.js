@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'message',
 	execute(message) {
-		const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(config.prefix)})\\s*`);
+		const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(Config.prefix)})\\s*`);
 
 		if (!prefixRegex.test(message.content) || message.author.bot) return;
 		console.log(`${message.author.tag}: ${message.content}`);
@@ -21,7 +21,7 @@ module.exports = {
 			let reply = 'No arguments were provided. :/';
 
 			if (command.usage) {
-				reply += `\nProper usage would be: \`${config.prefix}${command.name} ${command.usage}\``;
+				reply += `\nProper usage would be: \`${Config.prefix}${command.name} ${command.usage}\``;
 			}
 
 			return message.channel.send(reply, { disableMentions: 'all' });
@@ -33,7 +33,7 @@ module.exports = {
 
 		const now = Date.now();
 		const timestamps = message.client.cooldowns.get(command.name);
-		const cooldownAmount = (command.cooldown || config.defaultCooldown) * 1000;
+		const cooldownAmount = (command.cooldown || Config.defaultCooldown) * 1000;
 
 		if (timestamps.has(message.author.id)) {
 			const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
@@ -57,7 +57,12 @@ module.exports = {
 	}
 };
 
-const config = require('../config.json');
+const { dbConnectString } = require('./connect.json');
+const Config = require('../config.json');
 const Discord = require('discord.js');
+const Keyv = require('keyv');
+
+const prefixes = new Keyv(dbConnectString, { namespace: 'prefixes' });
+prefixes.on('error', err => console.error('Keyv connection error:', err));
 
 const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

@@ -1,10 +1,13 @@
 module.exports = {
 	name: 'message',
 	execute(message) {
-		if (!message.content.startsWith(config.prefix) || message.author.bot) return;
+		const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(config.prefix)})\\s*`);
+
+		if (!prefixRegex.test(message.content) || message.author.bot) return;
 		console.log(`${message.author.tag}: ${message.content}`);
 
-		const args = message.content.slice(config.prefix.length).split(/\s+/);
+		const [, matchedPrefix] = message.content.match(prefixRegex);
+		const args = message.content.slice(matchedPrefix.length).trim().split(/\s+/);
 		const commandName = args.shift().toLowerCase();
 
 		const command = message.client.commands.get(commandName) || message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
@@ -56,3 +59,5 @@ module.exports = {
 
 const config = require('../config.json');
 const Discord = require('discord.js');
+
+const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

@@ -7,9 +7,6 @@ const client = new Discord.Client();
 client.commands = new Discord.Collection();
 client.cooldowns = new Discord.Collection();
 
-const keyv = new Keyv(Connect.dbConnectString);
-keyv.on('error', err => console.error('Keyv connection error:', err));
-
 const commandFiles = Fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);

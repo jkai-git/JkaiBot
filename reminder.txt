@@ -4,4 +4,4 @@
 -- command types and type specific subdirectories.
 -- ADD COMMENTS EVERYWHERE 'CAUSE I DON'T KNOW WHAT DOES WHAT!!
 -- Improve help command.
--- !avatar command @everyone version only works on small guilds
+-- !avatar command @everyone version only works on small guilds //not sure to be honest

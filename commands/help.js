@@ -1,8 +1,8 @@
 module.exports = {
 	name: 'help',
 	description: 'List all the commands or information about a specific command.',
-	aliases: ['commands', 'cmds'],
 	usage: '(optional)<command name>',
+	aliases: ['commands', 'cmds'],
 	execute(message, args) {
 		const data = [];
 		const { commands } = message.client;
@@ -34,9 +34,9 @@ module.exports = {
 
 		data.push(`**Name:** ${command.name}`);
 		data.push(`**Description:** ${command.description}`);
-		data.push(`**Cooldown:** ${command.cooldown || Config.defaultCooldown} second(s)`);
-		if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
 		if (command.usage) data.push(`**Usage:** ${Config.defaultPrefix}${command.name} ${command.usage}`);
+		if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
+		data.push(`**Cooldown:** ${command.cooldown || Config.defaultCooldown} second(s)`);
 
 		message.channel.send(data, { split: true, disableMentions: 'all' });
 	}

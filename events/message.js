@@ -1,6 +1,6 @@
 module.exports = {
 	name: 'message',
-	execute(message) {
+	async execute(message) {
 		if (message.author.bot) return;
 
 		let args;
@@ -12,7 +12,7 @@ module.exports = {
 			if (!prefixRegex.test(message.content)) return;
 
 			const [, matchedPrefix] = message.content.match(prefixRegex);
-			args = message.content.slice(matchedPrefix.length).split(/\s+/);
+			args = message.content.slice(matchedPrefix.length).trim().split(/\s+/);
 		} else {
 			const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(Config.defaultPrefix)})\\s*`);
 
@@ -23,7 +23,7 @@ module.exports = {
 				sliceLength = matchedPrefix.length;
 			}
 
-			args = message.content.slice(sliceLength).split(/\s+/);
+			args = message.content.slice(sliceLength).trim().split(/\s+/);
 		}
 
 		console.log(`${message.author.tag}: ${message.content}`);
@@ -60,7 +60,7 @@ module.exports = {
 			if (now < expirationTime) {
 				const timeLeftString = ((expirationTime - now) / 1000).toFixed(1);
 				if (timeLeftString === '0.0') return message.channel.send(`Less than 0.1 seconds left before you can use the \`${command.name}\` command.`);
-				return message.channel.send(`Please wait ${timeLeftString} more second(s) before using the \`${command.name}\` command.`);
+				return message.channel.send(`Please wait ${timeLeftString} second(s) before using the \`${command.name}\` command.`);
 			}
 		}
 
@@ -76,7 +76,7 @@ module.exports = {
 	}
 };
 
-const { dbConnectString } = require('./connect.json');
+const { dbConnectString } = require('../connect.json');
 const Config = require('../config.json');
 const Discord = require('discord.js');
 const Keyv = require('keyv');

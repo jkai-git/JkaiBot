@@ -1,15 +1,34 @@
 module.exports = {
 	name: 'message',
 	execute(message) {
-		const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(Config.prefix)})\\s*`);
+		if (message.author.bot) return;
 
-		if (!prefixRegex.test(message.content) || message.author.bot) return;
+		let args;
+		if (message.guild) {
+			const guildPrefix = await prefixes.get(message.guild.id);
+			const prefix = guildPrefix ? guildPrefix : Config.defaultPrefix;
+			const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(prefix)})\\s*`);
+
+			if (!prefixRegex.test(message.content)) return;
+
+			const [, matchedPrefix] = message.content.match(prefixRegex);
+			args = message.content.slice(matchedPrefix.length).split(/\s+/);
+		} else {
+			const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(Config.defaultPrefix)})\\s*`);
+
+			let sliceLength;
+			if (!prefixRegex.test(message.content)) sliceLength = 0;
+			else {
+				const [, matchedPrefix] = message.content.match(prefixRegex);
+				sliceLength = matchedPrefix.length;
+			}
+
+			args = message.content.slice(sliceLength).split(/\s+/);
+		}
+
 		console.log(`${message.author.tag}: ${message.content}`);
 
-		const [, matchedPrefix] = message.content.match(prefixRegex);
-		const args = message.content.slice(matchedPrefix.length).trim().split(/\s+/);
 		const commandName = args.shift().toLowerCase();
-
 		const command = message.client.commands.get(commandName) || message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 		if (!command) return;
 
@@ -21,7 +40,7 @@ module.exports = {
 			let reply = 'No arguments were provided. :/';
 
 			if (command.usage) {
-				reply += `\nProper usage would be: \`${Config.prefix}${command.name} ${command.usage}\``;
+				reply += `\nProper usage would be: \`${Config.defaultPrefix}${command.name} ${command.usage}\``;
 			}
 
 			return message.channel.send(reply, { disableMentions: 'all' });

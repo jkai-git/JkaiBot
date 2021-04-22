@@ -11,7 +11,7 @@ module.exports = {
 		if (!args.length) {
 			data.push('List of all commands:');
 			data.push(commands.map(command => command.name).join(', '));
-			data.push(`\nYou can try \`${Config.prefix}${this.name} <command name>\` to get info on a specific command.`);
+			data.push(`\nYou can try \`${Config.defaultPrefix}${this.name} <command name>\` to get info on a specific command.`);
 
 			return message.author.send(data, { split: true })
 				.then(() => {
@@ -36,7 +36,7 @@ module.exports = {
 		data.push(`**Description:** ${command.description}`);
 		data.push(`**Cooldown:** ${command.cooldown || Config.defaultCooldown} second(s)`);
 		if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
-		if (command.usage) data.push(`**Usage:** ${Config.prefix}${command.name} ${command.usage}`);
+		if (command.usage) data.push(`**Usage:** ${Config.defaultPrefix}${command.name} ${command.usage}`);
 
 		message.channel.send(data, { split: true, disableMentions: 'all' });
 	}

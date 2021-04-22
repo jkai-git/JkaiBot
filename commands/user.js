@@ -3,9 +3,9 @@ module.exports = {
 	description: 'Informations about the user.',
 	aliases: ['profile'],
 	execute(message, args) {
-		message.channel.send(`Nickname: ${message.author.username}\n`
-							+`Tag: ${message.author.tag}\n`
-							+`id: ${message.author.id}\n`
-							+`Created at: ${message.author.createdAt}\n`);
+		message.channel.send(`>>> **Nickname:** ${message.author.username}\n`
+								+`**Tag:** ${message.author.tag}\n`
+								+`**id:** ${message.author.id}\n`
+								+`**Created at:** ${message.author.createdAt}\n`);
 	}
 };

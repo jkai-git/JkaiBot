@@ -3,11 +3,11 @@ module.exports = {
 	description: 'Informations about the server.',
 	guildOnly: true,
 	execute(message, args) {
-		message.channel.send(`Server name: ${message.guild.name}\n`
-							+`Server id: ${message.guild.id}\n`
-							+`Server owner: ${message.guild.owner.tag}\n`
-							+`Total members: ${message.guild.memberCount}\n`
-							+`Created at: ${message.guild.createdAt}\n`
-							+`Region: ${message.guild.region}`);
+		message.channel.send(`>>> **Server name:** ${message.guild.name}\n`
+								+`**Server id:** ${message.guild.id}\n`
+								+`**Server owner:** ${message.guild.owner.displayName}\n`
+								+`**Total members:** ${message.guild.memberCount}\n`
+								+`**Created at:** ${message.guild.createdAt}\n`
+								+`**Region:** ${message.guild.region}`);
 	}
 };

@@ -13,7 +13,7 @@ module.exports = {
 			data.push(commands.map(command => command.name).join(', '));
 			data.push(`\nYou can try \`${Config.defaultPrefix}${this.name} <command name>\` to get info on a specific command.`);
 
-			return message.author.send(data, { split: true })
+			return message.author.send('>>> ' + data.join('\n'), { split: true })
 				.then(() => {
 					if (message.channel.type === 'dm') return;
 					message.channel.send('I\'ve sent you a DM with all my commands!');
@@ -38,7 +38,7 @@ module.exports = {
 		if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
 		data.push(`**Cooldown:** ${command.cooldown || Config.defaultCooldown} second(s)`);
 
-		message.channel.send(data, { split: true, disableMentions: 'all' });
+		message.channel.send('>>> ' + data.join('\n'), { split: true, disableMentions: 'all' });
 	}
 };
 

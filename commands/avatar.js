@@ -3,7 +3,7 @@ module.exports = {
 	description: 'Avatar lookup of mentioned users.',
 	usage: '(optional)<userTags> (optional)<@everyone>',
 	aliases: ['pic', 'icon', 'pfp'],
-	execute(message, args) {
+	async execute(message, args) {
 		/*
 		TO-DO:
 			-different behaviour when it's in TEXT and DM channels.
@@ -11,22 +11,29 @@ module.exports = {
 		*/
 
 		// if @everyone mentioned, send all the avatars on guild
-		if (message.mentions.everyone) {
-			message.guild.members.fetch().then(memberCollection => {
-				const avatarList = memberCollection.map(member => {
-					return `${member.displayName}'s avatar: ${member.user.displayAvatarURL(avatarOptions)}`;
-				});
-				message.channel.send(avatarList);
+		if (args[0] === 'everyone') {
+			const memberCollection = await message.guild.members.fetch();
+			const avatarList = message.guild.members.cache.map(member => {
+				return `${member.user.displayAvatarURL(avatarOptions)}`;
 			});
+			let data = [];
+			for (let i = 0; i < avatarList.length; i++) {
+				data.push(avatarList[i]);
+				if ((i+1) % 10 === 0) {
+					message.channel.send({ files: data });
+					data = [];
+				}
+			}
+			message.channel.send({ files: data });
 			return;
 		}
 		// if no args, send the author's avatar
 		if (!message.mentions.users.size) {
-			return message.channel.send(`Your avatar: ${message.author.displayAvatarURL(avatarOptions)}`);
+			return message.channel.send({ files: [message.author.displayAvatarURL(avatarOptions)] });
 		}
 		// send the mentioned users avatar (in guild)
 		const avatarList = message.mentions.members.map(member => {
-			return `${member.displayName}'s avatar: ${member.user.displayAvatarURL(avatarOptions)}`;
+			return `${member.user.displayAvatarURL(avatarOptions)}`;
 		});
 		message.channel.send(avatarList);
 	}

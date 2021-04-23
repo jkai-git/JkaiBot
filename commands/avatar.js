@@ -13,7 +13,7 @@ module.exports = {
 		// if @everyone mentioned, send all the avatars on guild
 		if (args[0] === 'all') {
 			const memberCollection = await message.guild.members.fetch();
-			const avatarList = message.guild.members.cache.map(member => {
+			const avatarList = memberCollection.map(member => {
 				return `${member.user.displayAvatarURL(avatarOptions)}`;
 			});
 			let data = [];

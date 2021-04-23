@@ -1,41 +1,31 @@
 module.exports = {
 	name: 'message',
 	async execute(message) {
+		// Don't spam my bot with other bots
 		if (message.author.bot) return;
 
+		// Split message to arguments and prefix test
+		// In guild you can use: @mention && (defaultPrefix || guildPrefix)
+		// In DM you can use: command without prefix && @mention && defaultPrefix
 		let args;
-		if (message.guild) {
-			const guildPrefix = await prefixes.get(message.guild.id);
-			const prefix = guildPrefix ? guildPrefix : Config.defaultPrefix;
-			const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(prefix)})\\s*`);
+		if (message.guild) args = await guildPrefixTest(message);
+		else args = dmPrefixTest(message);
+		// no valid prefix found
+		if (!args) return;
 
-			if (!prefixRegex.test(message.content)) return;
-
-			const [, matchedPrefix] = message.content.match(prefixRegex);
-			args = message.content.slice(matchedPrefix.length).trim().split(/\s+/);
-		} else {
-			const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(Config.defaultPrefix)})\\s*`);
-
-			let sliceLength;
-			if (!prefixRegex.test(message.content)) sliceLength = 0;
-			else {
-				const [, matchedPrefix] = message.content.match(prefixRegex);
-				sliceLength = matchedPrefix.length;
-			}
-
-			args = message.content.slice(sliceLength).trim().split(/\s+/);
-		}
-
+		// Log the message if it got through prefix test
 		console.log(`${message.author.tag}: ${message.content}`);
 
-		const commandName = args.shift().toLowerCase();
-		const command = message.client.commands.get(commandName) || message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+		// Find command
+		const command = findCommand(args.shift());
 		if (!command) return;
 
+		// guildOnly test
 		if (command.guildOnly && message.channel.type === 'dm') {
 			return message.channel.send('I can\'t execute that command inside DMs!');
 		}
 
+		// args test
 		if (command.args && !args.length) {
 			let reply = 'No arguments were provided. :/';
 
@@ -46,27 +36,34 @@ module.exports = {
 			return message.channel.send(reply, { disableMentions: 'all' });
 		}
 
-		if (!message.client.cooldowns.has(command.name)) {
-			message.client.cooldowns.set(command.name, new Discord.Collection());
-		}
-
+		// Initialize cooldown variables
 		const now = Date.now();
-		const timestamps = message.client.cooldowns.get(command.name);
+		const timestamps = cooldowns.get(command.name); // cooldowns collection already initialized in index.js, so this must return a collection
 		const cooldownAmount = (command.cooldown || Config.defaultCooldown) * 1000;
 
+		// If command is on cooldown for this person
 		if (timestamps.has(message.author.id)) {
 			const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
+			const timeLeft = (expirationTime - now) / 1000;
 
-			if (now < expirationTime) {
-				const timeLeftString = ((expirationTime - now) / 1000).toFixed(1);
-				if (timeLeftString === '0.0') return message.channel.send(`Less than 0.1 seconds left before you can use the \`${command.name}\` command.`);
-				return message.channel.send(`Please wait ${timeLeftString} second(s) before using the \`${command.name}\` command.`);
+			// DAYS? HOURS?
+			// Minutes left
+			if (timeLeft > 60) {
+				const timeLeftString = (timeLeft / 60).toFixed();
+				return message.channel.send(`Please wait ${timeLeftString} minute(s) before using the \`${command.name}\` command.`);
 			}
+
+			// Seconds left
+			const timeLeftString = timeLeft.toFixed(1);
+			if (timeLeftString === '0.0') return message.channel.send(`Less than 0.1 seconds left before you can use the \`${command.name}\` command.`);
+			return message.channel.send(`Please wait ${timeLeftString} second(s) before using the \`${command.name}\` command.`);
 		}
 
+		// If wasn't on cooldown then set cooldown
 		timestamps.set(message.author.id, now);
 		setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
+		// Execute command
 		try {
 			command.execute(message, args);
 		} catch(error) {
@@ -76,12 +73,32 @@ module.exports = {
 	}
 };
 
-const { dbConnectString } = require('../connect.json');
+const { commands, cooldowns, prefixes, findCommand } = require('../global.js');
 const Config = require('../config.json');
-const Discord = require('discord.js');
-const Keyv = require('keyv');
 
-const prefixes = new Keyv(dbConnectString, { namespace: 'prefixes' });
-prefixes.on('error', err => console.error('Keyv connection error:', err));
-
+// To be able to use special characters in Regular Expressions
 const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+guildPrefixTest = async message => {
+	const guildPrefix = await prefixes.get(message.guild.id);
+	const prefix = guildPrefix ? guildPrefix : Config.defaultPrefix;
+	const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(prefix)})\\s*`);
+
+	if (!prefixRegex.test(message.content)) return undefined;
+
+	const [, matchedPrefix] = message.content.match(prefixRegex);
+	return message.content.slice(matchedPrefix.length).trim().split(/\s+/);
+}
+
+dmPrefixTest = message => {
+	const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(Config.defaultPrefix)})\\s*`);
+
+	let sliceLength;
+	if (!prefixRegex.test(message.content)) sliceLength = 0;
+	else {
+		const [, matchedPrefix] = message.content.match(prefixRegex);
+		sliceLength = matchedPrefix.length;
+	}
+
+	return message.content.slice(sliceLength).trim().split(/\s+/);
+}

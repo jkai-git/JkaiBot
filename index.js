@@ -1,16 +1,21 @@
-const Connect = require('./connect.json');
-const Discord = require('discord.js');
-const Keyv = require('keyv');
-const Fs = require('fs');
+// Load .env into process.env
+require('dotenv').config();
 
+// Initialize Discord Client
+const Discord = require('discord.js');
 const client = new Discord.Client();
-client.commands = new Discord.Collection();
-client.cooldowns = new Discord.Collection();
+
+// Initialize Commands and Events for the Client
+const { commands, cooldowns } = require('./global.js');
+const Fs = require('fs');
 
 const commandFiles = Fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
-	client.commands.set(command.name, command);
+	commands.set(command.name, command);
+
+	// Fill cooldowns collection with Commands
+	cooldowns.set(command.name, new Discord.Collection());
 }
 
 const eventFiles = Fs.readdirSync('./events').filter(file => file.endsWith('.js'));
@@ -23,4 +28,5 @@ for (const file of eventFiles) {
 	}
 }
 
-client.login(Connect.token);
+// Bot goes ONLINE
+client.login(process.env.BOT_TOKEN);

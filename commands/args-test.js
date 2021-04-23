@@ -5,7 +5,7 @@ module.exports = {
 	aliases: ['args'],
 	args: true,
 	execute(message, args) {
-		message.channel.send(`Arguments: ${args.join(' ')}\n`
-							+`Arguments length: ${args.length}`);
+		message.channel.send(`>>> **Arguments:** ${args.join(' ')}\n`
+								+`**Arguments length:** ${args.length}`);
 	}
 };

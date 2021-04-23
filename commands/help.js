@@ -5,11 +5,10 @@ module.exports = {
 	aliases: ['commands', 'cmds'],
 	execute(message, args) {
 		const data = [];
-		const { commands } = message.client;
 
 		// if no args, send list of all commands to DM
 		if (!args.length) {
-			data.push('List of all commands:');
+			data.push('**List of all commands:**');
 			data.push(commands.map(command => command.name).join(', '));
 			data.push(`\nYou can try \`${Config.defaultPrefix}${this.name} <command name>\` to get info on a specific command.`);
 
@@ -25,9 +24,7 @@ module.exports = {
 		}
 
 		// if args, detailed informations about the command
-		const commandName = args[0].toLowerCase();
-		const command = commands.get(commandName) || commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-
+		const command = findCommand(args[0]);
 		if (!command) {
 			return message.channel.send('That\'s not a valid command!');
 		}
@@ -42,4 +39,5 @@ module.exports = {
 	}
 };
 
+const { commands, findCommand } = require('../global.js');
 const Config = require('../config.json');

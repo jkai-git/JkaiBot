@@ -4,5 +4,6 @@
 -- command types and type specific subdirectories.
 -- ADD COMMENTS EVERYWHERE 'CAUSE I DON'T KNOW WHAT DOES WHAT!!
 -- Improve help command.
+-- bot owner id in config.json and priviliged features (e.g.: reload command only works if owner calls it)
 
 -- discord.js guide: POPULAR TOPICS, MISCELLANEOUS, SHARDING, VOICE, OAUTH2, IMPROVING DEV ENVIRONMENT, ADDITIONAL INFORMATION

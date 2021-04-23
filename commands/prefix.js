@@ -5,23 +5,22 @@ module.exports = {
 	guildOnly: true,
 	cooldown: 5,
 	async execute(message, args) {
+		// SHOW
 		if (!args.length) {
 			return message.channel.send(`Server prefix: \`${await prefixes.get(message.guild.id) || defaultPrefix}\``);
 		}
 
+		// RESET
 		if (args[0] === 'reset') {
 			await prefixes.delete(message.guild.id);
-			return message.channel.send(`Server prefix is reset to: \`${defaultPrefix}\``);
+			return message.channel.send(`Server prefix is RESET to: \`${defaultPrefix}\``);
 		}
 
+		// SET
 		await prefixes.set(message.guild.id, args[0]);
-		message.channel.send(`Server prefix is set to: \`${args[0]}\``);
+		message.channel.send(`Server prefix is SET to: \`${args[0]}\``);
 	}
 };
 
-const { dbConnectString } = require('../connect.json');
+const { prefixes } = require('../global.js');
 const { defaultPrefix } = require('../config.json');
-const Keyv = require('keyv');
-
-const prefixes = new Keyv(dbConnectString, { namespace: 'prefixes' });
-prefixes.on('error', err => console.error('Keyv connection error:', err));

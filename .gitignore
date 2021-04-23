@@ -102,6 +102,3 @@ dist
 
 # TernJS port file
 .tern-port
-
-# Discord Bot Token and Database Connection String
-connect.json

@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'avatar',
-	description: 'Avatar lookup of mentioned users.',
-	usage: '(optional)<userTags> (optional)<@everyone>',
+	description: 'Avatar lookup of mentioned users. (be careful with \`!avatar all\`)',
+	usage: '(optional)(<userTags>||all)',
 	aliases: ['pic', 'icon', 'pfp'],
 	async execute(message, args) {
 		/*
@@ -11,7 +11,7 @@ module.exports = {
 		*/
 
 		// if @everyone mentioned, send all the avatars on guild
-		if (args[0] === 'everyone') {
+		if (args[0] === 'all') {
 			const memberCollection = await message.guild.members.fetch();
 			const avatarList = message.guild.members.cache.map(member => {
 				return `${member.user.displayAvatarURL(avatarOptions)}`;

@@ -6,5 +6,8 @@
 -- Improve help command.
 -- bot owner id in config.json and priviliged features (e.g.: reload command only works if owner calls it)
 -- hello command greets you in a random language?
+-- user info embed color match his role color
+-- avatar all command with reactions to the next and previous picture
+-- fast type game
 
 -- discord.js guide: POPULAR TOPICS, MISCELLANEOUS, SHARDING, VOICE, OAUTH2, IMPROVING DEV ENVIRONMENT, ADDITIONAL INFORMATION

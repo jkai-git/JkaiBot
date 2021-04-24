@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'prefix',
 	description: 'Shows prefix for server if no argument is given. Changes prefix for server to a given argument. Resets prefix for server if the argument is \`reset\`.',
-	usage: '(optional)(<newPrefix>||reset)',
+	usage: '(optional)reset (optional)<newPrefix>',
 	guildOnly: true,
 	cooldown: 5,
 	async execute(message, args) {

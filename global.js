@@ -9,6 +9,9 @@ const cooldowns = new Discord.Collection();
 const prefixes = new Keyv(process.env.KEYV_CONNECTSTRING, { namespace: 'prefixes' });
 prefixes.on('error', err => console.error('Keyv connection error: ', err));
 
+// Regular Expressions
+const regexId = /^\d{18}$/;
+
 // Functions
 findCommand = commandName => {
 	commandName = commandName.toLowerCase();
@@ -21,6 +24,9 @@ module.exports = {
 
 	// Keyv Connections
 	prefixes,
+
+	// Regular Expressions
+	regexId,
 
 	// Functions
 	findCommand

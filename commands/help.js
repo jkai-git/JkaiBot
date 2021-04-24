@@ -5,7 +5,7 @@ module.exports = {
 	aliases: ['commands', 'cmds'],
 	execute(message, args) {
 		const data = [];
-
+		
 		// if no args, send list of all commands to DM
 		if (!args.length) {
 			data.push('**List of all commands:**');

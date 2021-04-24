@@ -9,17 +9,30 @@ module.exports = {
 			return message.channel.send('>>> ' + infoString(message.author));
 		}
 
-		const parsedArgs = await parseArguments(args, message.client, message.guild);
-		if (!parsedArgs) return message.channel.send('Something went wrong. It\'s probably an incorrect id.');
-		if (!parsedArgs.filter(arg => arg.type === 'user' || arg.type === 'member').length) {
-			return message.channel.send('Wrong argument(s). Use the \`help\` command.');
-		}
 		let data = [];
-		for (let i = 0; i < parsedArgs.length; ++i) {
-			if (parsedArgs[i].type === 'user') data.push(infoString(parsedArgs[i].user));
-			else if (parsedArgs[i].type === 'member') data.push(infoString(parsedArgs[i].member.user));
+
+		if (args[0] === 'all') {
+			if (message.guild) {
+				data = (await message.guild.members.fetch()).map(member => {
+					return infoString(member.user);
+				});
+			} else {
+				data.push(infoString(message.author));
+				data.push(infoString(message.client.user));
+			}
+		} else {
+			const parsedArgs = await parseArguments(args, message.client, message.guild);
+			if (!parsedArgs) return message.channel.send('Something went wrong. It\'s probably an incorrect id.');
+			if (!parsedArgs.filter(arg => arg.type === 'user' || arg.type === 'member').length) {
+				return message.channel.send('Wrong argument(s). Use the \`help\` command.');
+			}
+			for (let i = 0; i < parsedArgs.length; ++i) {
+				if (parsedArgs[i].type === 'user') data.push(infoString(parsedArgs[i].user));
+				else if (parsedArgs[i].type === 'member') data.push(infoString(parsedArgs[i].member.user));
+			}
 		}
-		message.channel.send('>>> ' + data.join('\n'));
+
+		message.channel.send('>>> ' + data.join('═══════════════════════════\n'), { split: { prepend: '>>> ' } });
 	}
 };
 

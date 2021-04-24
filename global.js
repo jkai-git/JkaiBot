@@ -1,3 +1,4 @@
+const { client } = require('./index.js');
 const Discord = require('discord.js');
 const Keyv = require('keyv');
 
@@ -13,9 +14,15 @@ prefixes.on('error', err => console.error('Keyv connection error: ', err));
 const regexId = /^\d{18}$/;
 
 // Functions
-findCommand = commandName => {
+const findCommand = commandName => {
 	commandName = commandName.toLowerCase();
 	return commands.get(commandName) || commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+}
+const findUserById = async (id) => {
+	return client.users.fetch(id, false).catch(error => {
+		console.error('Not a valid discord id!', error);
+		return undefined;
+	});
 }
 
 module.exports = {
@@ -29,5 +36,5 @@ module.exports = {
 	regexId,
 
 	// Functions
-	findCommand
+	findCommand, findUserById
 };

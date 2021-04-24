@@ -2,6 +2,7 @@ module.exports = {
 	name: 'prune',
 	description: 'Delete [1..99] amount of messages not older than 2 weeks in the channel.',
 	usage: '<number[1..99]>',
+	guildOnly: true,
 	args: true,
 	execute(message, args) {
 		/*

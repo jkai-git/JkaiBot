@@ -9,5 +9,10 @@
 -- user info embed color match his role color
 -- avatar all command with reactions to the next and previous picture
 -- fast type game
+-- rethink global.js
+-- class for finder functions and for regex testers also
+-- server command not only guild.
+-- better mention detect system in user, avatar command
+-- prefix lookup function
 
 -- discord.js guide: POPULAR TOPICS, MISCELLANEOUS, SHARDING, VOICE, OAUTH2, IMPROVING DEV ENVIRONMENT, ADDITIONAL INFORMATION

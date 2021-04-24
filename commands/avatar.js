@@ -29,14 +29,10 @@ module.exports = {
 			const ids = args.filter(arg => regexId.test(arg));
 			const users = [];
 			for (let i = 0; i < ids.length; ++i) {
-				let user;
-				await message.client.users.fetch(ids[i], false).then(foundUser => {
-					user = foundUser;
-				}).catch(error => {
-					console.error('Not a valid discord id!', error);
-					message.channel.send(`No user found for the following id: ${ids[i]}`);
-				});
-				if (!user) return;
+				const user = await findUserById(ids[i], message.client);
+				if (!user) {
+					return message.channel.send(`No user found for the following id: ${ids[i]}`);
+				}
 				users.push(user);
 			}
 			avatarList = avatarList.concat(users.map(user => {
@@ -54,6 +50,9 @@ module.exports = {
 					return { name: user.username, url: user.displayAvatarURL(avatarOptions) };
 				}));
 			}
+
+			// WRONG ARGUMENT
+			return message.channel.send('Wrong argument(s). Use the \`help\` command.');
 		}
 
 		// Only send image
@@ -79,7 +78,7 @@ module.exports = {
 	}
 };
 
-const { regexId } = require('../global.js');
+const { regexId, findUserById } = require('../global.js');
 
 const avatarOptions = {
 	format: 'png',

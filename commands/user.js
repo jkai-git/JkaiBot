@@ -26,7 +26,7 @@ module.exports = {
 const { parseArguments } = require('../global.js');
 
 const infoString = user => {
-	return `**Nickname:** ${user.username}\n`
+	return `**Name:** ${user.username}\n`
 		  +`**Tag:** ${user.tag}\n`
 		  +`**id:** ${user.id}\n`
 		  +`**Created at:** ${user.createdAt}\n`;

@@ -1,4 +1,3 @@
-const { client } = require('./index.js');
 const Discord = require('discord.js');
 const Keyv = require('keyv');
 
@@ -12,17 +11,46 @@ prefixes.on('error', err => console.error('Keyv connection error: ', err));
 
 // Regular Expressions
 const regexId = /^\d{18}$/;
+const regexMention = /^<@!?(\d{18})>$/;
 
 // Functions
 const findCommand = commandName => {
 	commandName = commandName.toLowerCase();
 	return commands.get(commandName) || commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 }
-const findUserById = async (id) => {
+const findUserById = async (id, client) => {
 	return client.users.fetch(id, false).catch(error => {
 		console.error('Not a valid discord id!', error);
-		return undefined;
 	});
+}
+const findMemberById = async (id, guild) => {
+	return guild.members.fetch(id).catch(error => {
+		console.error('Not a valid guild member id!', error);
+	});
+}
+const parseArguments = async (args, client, guild) => {
+	let parsed = [];
+	for (let i = 0; i < args.length; ++i) {
+		if (regexId.test(args[i])) {
+			const user = await findUserById(args[i], client);
+			if (!user) return undefined;
+			parsed.push({ type: 'user', user: user });
+		} else if (regexMention.test(args[i])) {
+			const id = args[i].match(regexMention)[1];
+			if (guild) {
+				const member = await findMemberById(id, guild);
+				if (!member) return undefined;
+				parsed.push({ type: 'member', member: member });
+			} else {
+				const user = await findUserById(id, client);
+				if (!user) return undefined;
+				parsed.push({ type: 'user', user: user });
+			}
+		} else {
+			parsed.push({ type: 'text', text: args[i] });
+		}
+	}
+	return parsed;
 }
 
 module.exports = {
@@ -33,8 +61,7 @@ module.exports = {
 	prefixes,
 
 	// Regular Expressions
-	regexId,
 
 	// Functions
-	findCommand, findUserById
+	findCommand, parseArguments
 };

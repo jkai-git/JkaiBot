@@ -25,34 +25,15 @@ module.exports = {
 		}
 		// Collect mentions' and ids' avatars
 		else {
-			// By Id
-			const ids = args.filter(arg => regexId.test(arg));
-			const users = [];
-			for (let i = 0; i < ids.length; ++i) {
-				const user = await findUserById(ids[i], message.client);
-				if (!user) {
-					return message.channel.send(`No user found for the following id: ${ids[i]}`);
-				}
-				users.push(user);
+			const parsedArgs = await parseArguments(args, message.client, message.guild);
+			if (!parsedArgs) return message.channel.send('Something went wrong. It\'s probably an incorrect id.');
+			if (!parsedArgs.filter(arg => arg.type === 'user' || arg.type === 'member').length) {
+				return message.channel.send('Wrong argument(s). Use the \`help\` command.');
 			}
-			avatarList = avatarList.concat(users.map(user => {
-				return { name: user.tag, url: user.displayAvatarURL(avatarOptions) };
-			}));
-			// In guild mentioned
-			if (message.mentions.members && message.mentions.members.size) {
-				avatarList = avatarList.concat(message.mentions.members.map(member => {
-					return { name: member.displayName, url: member.user.displayAvatarURL(avatarOptions) };
-				}));
+			for (let i = 0; i < parsedArgs.length; ++i) {
+				if (parsedArgs[i].type === 'user') avatarList.push({ name: parsedArgs[i].user.tag, url: parsedArgs[i].user.displayAvatarURL(avatarOptions)});
+				else if (parsedArgs[i].type === 'member') avatarList.push({ name: parsedArgs[i].member.displayName, url: parsedArgs[i].member.user.displayAvatarURL(avatarOptions)});
 			}
-			// In dm mentioned
-			else if (message.mentions.users.size) {
-				avatarList = avatarList.concat(message.mentions.users.map(user => {
-					return { name: user.username, url: user.displayAvatarURL(avatarOptions) };
-				}));
-			}
-
-			// WRONG ARGUMENT
-			return message.channel.send('Wrong argument(s). Use the \`help\` command.');
 		}
 
 		// Only send image
@@ -78,7 +59,7 @@ module.exports = {
 	}
 };
 
-const { regexId, findUserById } = require('../global.js');
+const { parseArguments } = require('../global.js');
 
 const avatarOptions = {
 	format: 'png',

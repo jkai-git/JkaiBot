@@ -10,16 +10,16 @@ module.exports = {
 			return message.channel.send('>>> ' + infoString(message.author));
 		}
 
-		let data = [];
+		let msg = [];
 
 		if (args[0] === 'all') {
 			if (message.guild) {
-				data = (await message.guild.members.fetch()).map(member => {
+				msg = (await message.guild.members.fetch()).map(member => {
 					return infoString(member.user);
 				});
 			} else {
-				data.push(infoString(message.author));
-				data.push(infoString(message.client.user));
+				msg.push(infoString(message.author));
+				msg.push(infoString(message.client.user));
 			}
 		} else {
 			const parsedArgs = await parseArguments(args, message.client, message.guild);
@@ -28,12 +28,12 @@ module.exports = {
 				return message.channel.send('Wrong argument(s). Use the \`help\` command.');
 			}
 			parsedArgs.forEach(({ type, data }) => {
-				if (type === 'user') data.push(infoString(data));
-				else if (type === 'member') data.push(infoString(data.user));
+				if (type === 'user') msg.push(infoString(data));
+				else if (type === 'member') msg.push(infoString(data.user));
 			});
 		}
 
-		message.channel.send('>>> ' + data.join('═══════════════════════════\n'), { split: { prepend: '>>> ' } });
+		message.channel.send('>>> ' + msg.join('═══════════════════════════\n'), { split: { prepend: '>>> ' } });
 	}
 };
 

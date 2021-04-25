@@ -22,7 +22,7 @@ module.exports = {
 
 		// guildOnly test
 		if (command.guildOnly && message.channel.type === 'dm') {
-			return message.channel.send('I can\'t execute that command inside DMs!');
+			return message.channel.send('I can\'t execute that command in DMs!');
 		}
 
 		// args test

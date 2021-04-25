@@ -15,5 +15,6 @@
 -- better mention detect system in user, avatar command
 -- prefix lookup function
 -- dispatcher.pause(true) gyorsan le fel állítani a hangerőt poénból.
+-- args-test command should test the parseArguments function.
 
 -- discord.js guide: POPULAR TOPICS, MISCELLANEOUS, SHARDING, VOICE, OAUTH2, IMPROVING DEV ENVIRONMENT, ADDITIONAL INFORMATION

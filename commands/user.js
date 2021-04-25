@@ -27,10 +27,10 @@ module.exports = {
 			if (!parsedArgs.filter(arg => arg.type === 'user' || arg.type === 'member').length) {
 				return message.channel.send('Wrong argument(s). Use the \`help\` command.');
 			}
-			for (let i = 0; i < parsedArgs.length; ++i) {
-				if (parsedArgs[i].type === 'user') data.push(infoString(parsedArgs[i].user));
-				else if (parsedArgs[i].type === 'member') data.push(infoString(parsedArgs[i].member.user));
-			}
+			parsedArgs.forEach(({ type, data }) => {
+				if (type === 'user') data.push(infoString(data));
+				else if (type === 'member') data.push(infoString(data.user));
+			});
 		}
 
 		message.channel.send('>>> ' + data.join('═══════════════════════════\n'), { split: { prepend: '>>> ' } });

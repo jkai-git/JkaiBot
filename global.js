@@ -4,6 +4,7 @@ const Keyv = require('keyv');
 // Collections
 const commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
+const connections = new Discord.Collection();
 
 // Keyv Connections
 const prefixes = new Keyv(process.env.KEYV_CONNECTSTRING, { namespace: 'prefixes' });
@@ -18,12 +19,12 @@ const findCommand = commandName => {
 	commandName = commandName.toLowerCase();
 	return commands.get(commandName) || commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 }
-const findUserById = async (id, client) => {
+const findUserById = (id, client) => {
 	return client.users.fetch(id, false).catch(error => {
 		console.error('Not a valid discord id!', error);
 	});
 }
-const findMemberById = async (id, guild) => {
+const findMemberById = (id, guild) => {
 	return guild.members.fetch(id).catch(error => {
 		console.error('Not a valid guild member id!', error);
 	});
@@ -55,7 +56,7 @@ const parseArguments = async (args, client, guild) => {
 
 module.exports = {
 	// Collections
-	commands, cooldowns,
+	commands, cooldowns, connections,
 
 	// Keyv Connections
 	prefixes,

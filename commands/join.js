@@ -3,7 +3,19 @@ module.exports = {
 	description: 'Joins the voice channel that you are in.',
 	guildOnly: true,
 	cooldown: 3,
-	async execute(message, args) {
-
+	execute(message, args) {
+		if (!message.member.voice.channel) return message.channel.send('You are not in a voice channel.');
+		if (!message.member.voice.channel.joinable) return message.channel.send('I can\'t join the voice channel that you are in.');
+		return message.member.voice.channel.join()
+			.then(connection => {
+				connection.voice.setSelfDeaf(true);
+				connections.set(message.guild.id, connection);
+			})
+			.catch(error => {
+				console.error('Couldn\'t join voice channel: ', error);
+				message.channel.send('There was an error while joining.');
+			});
 	}
 };
+
+const { connections } = require('../global.js');

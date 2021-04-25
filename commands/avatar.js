@@ -42,21 +42,21 @@ module.exports = {
 		// Send it in blocks of 5 with name
 		if (args[0] === 'all') {
 			let data = [];
-			avatarList.forEach(({ name, url }, i) => {
-				data.push(`**${name}:** ${url}`);
+			for (let i = 0; i < avatarList.length; ++i) {
+				data.push(`**${avatarList[i].name}:** ${avatarList[i].url}`);
 				if ((i + 1) % 5 == 0) {
-					message.channel.send(data);
+					await message.channel.send(data);
 					data = [];
 				}
-			});
+			}
 			if (data.length) message.channel.send(data);
 			return;
 		}
 		// Send it with name and slowly (but it's pretty)
-		avatarList.forEach(({ name, url }) => {
-			message.channel.send(`═══════════════════════════\n**${name}:**`);
-			message.channel.send(url);
-		});
+		for (let i = 0; i < avatarList.length; ++i) {
+			await message.channel.send(`═══════════════════════════\n**${avatarList[i].name}:**`);
+			await message.channel.send(avatarList[i].url);
+		}
 	}
 };
 

@@ -39,8 +39,8 @@ module.exports = {
 
 const { parseArguments } = require('../global.js');
 
-// Easter eggs go here
 const infoString = user => {
+	// Easter Eggs
 	if (user.id === '132920751555608576') {
 		return `**Name:** ${user.username} (P3tfacepol)\n`
 			  +`**Tag:** ${user.tag}\n`
@@ -49,6 +49,7 @@ const infoString = user => {
 			  +`**Penis size:** Úristen very big\n`;
 	}
 
+	// Default Infos
 	return `**Name:** ${user.username}\n`
 		  +`**Tag:** ${user.tag}\n`
 		  +`**id:** ${user.id}\n`

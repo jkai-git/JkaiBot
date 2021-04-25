@@ -35,20 +35,20 @@ const parseArguments = async (args, client, guild) => {
 		if (regexId.test(args[i])) {
 			const user = await findUserById(args[i], client);
 			if (!user) return undefined;
-			parsed.push({ type: 'user', user: user });
+			parsed.push({ type: 'user', data: user });
 		} else if (regexMention.test(args[i])) {
 			const id = args[i].match(regexMention)[1];
 			if (guild) {
 				const member = await findMemberById(id, guild);
 				if (!member) return undefined;
-				parsed.push({ type: 'member', member: member });
+				parsed.push({ type: 'member', data: member });
 			} else {
 				const user = await findUserById(id, client);
 				if (!user) return undefined;
-				parsed.push({ type: 'user', user: user });
+				parsed.push({ type: 'user', data: user });
 			}
 		} else {
-			parsed.push({ type: 'text', text: args[i] });
+			parsed.push({ type: 'text', data: args[i] });
 		}
 	}
 	return parsed;

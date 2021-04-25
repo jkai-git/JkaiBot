@@ -32,6 +32,7 @@ module.exports = {
 				return message.channel.send('Wrong argument(s). Use the \`help\` command.');
 			}
 			parsedArgs.forEach(({type, data}) => {
+				console.log(type, data);
 				if (type === 'user') avatarList.push({ name: data.tag, url: data.displayAvatarURL(avatarOptions)});
 				else if (type === 'member') avatarList.push({ name: data.displayName, url: data.user.displayAvatarURL(avatarOptions)});
 			});
@@ -43,7 +44,7 @@ module.exports = {
 		if (args[0] === 'all') {
 			let data = [];
 			avatarList.forEach(({ name, url }, i) => {
-				data.push(`**${avatarList[i].name}:** ${avatarList[i].url}`);
+				data.push(`**${name}:** ${url}`);
 				if ((i + 1) % 5 == 0) {
 					message.channel.send(data);
 					data = [];

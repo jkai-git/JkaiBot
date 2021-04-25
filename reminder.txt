@@ -17,5 +17,7 @@
 -- dispatcher.pause(true) gyorsan le fel állítani a hangerőt poénból.
 -- args-test command should test the parseArguments function.
 -- BIG test like every feature/command/errorhandling
+-- lyrics
+-- delete user input before command execution
 
 -- discord.js guide: POPULAR TOPICS, MISCELLANEOUS, SHARDING, VOICE, OAUTH2, IMPROVING DEV ENVIRONMENT, ADDITIONAL INFORMATION

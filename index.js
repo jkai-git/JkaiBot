@@ -4,7 +4,6 @@ require('dotenv').config();
 // Initialize Discord Client
 const Discord = require('discord.js');
 const client = new Discord.Client();
-module.exports = { client: client };
 
 // Initialize Commands and Events for the Client
 const { commands, cooldowns } = require('./global.js');

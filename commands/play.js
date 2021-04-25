@@ -7,8 +7,8 @@ module.exports = {
 	args: true,
 	cooldown: 3,
 	async execute(message, args) {
-		//if (!connections.has(message.guild.id)) await commands.get('join').execute(message, args);
-		//if (!connections.has(message.guild.id)) return;
+		if (!connections.has(message.guild.id)) await commands.get('join').execute(message, args);
+		if (!connections.has(message.guild.id)) return;
 		const connection = connections.get(message.guild.id);
 		if (!message.member.voice.channel || connection.channel.id != message.member.voice.channel.id) {
 			return message.channel.send(`You must be in my voice channel to use \`${this.name}\`.`);

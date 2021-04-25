@@ -32,7 +32,6 @@ module.exports = {
 				return message.channel.send('Wrong argument(s). Use the \`help\` command.');
 			}
 			parsedArgs.forEach(({type, data}) => {
-				console.log(type, data);
 				if (type === 'user') avatarList.push({ name: data.tag, url: data.displayAvatarURL(avatarOptions)});
 				else if (type === 'member') avatarList.push({ name: data.displayName, url: data.user.displayAvatarURL(avatarOptions)});
 			});

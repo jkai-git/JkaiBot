@@ -3,6 +3,7 @@ module.exports = {
 	description: 'Informations about the mentioned users. (you can also use IDs)',
 	usage: '(optional)<mentions> (optional)<userIDs>',
 	aliases: ['profile'],
+	cooldown: 3,
 	async execute(message, args) {
 		// No args, author info
 		if (!args.length) {

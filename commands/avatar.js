@@ -3,6 +3,7 @@ module.exports = {
 	description: 'Avatar lookup of mentioned users. (be careful with \`!avatar all\`)',
 	usage: '(optional)all (optional)<mentions> (optional)<userIDs>',
 	aliases: ['pic', 'icon', 'pfp'],
+	cooldown: 3,
 	async execute(message, args) {
 		let avatarList = [];
 		// No argument, author avatar

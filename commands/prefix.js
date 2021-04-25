@@ -7,20 +7,20 @@ module.exports = {
 	async execute(message, args) {
 		// SHOW
 		if (!args.length) {
-			return message.channel.send(`My prefix for the server: \`${await prefixes.get(message.guild.id) || defaultPrefix}\``);
+			return message.channel.send(`My prefix for the server: \`${await getPrefix(message.guild)}\``);
 		}
 
 		// RESET
 		if (args[0] === 'reset') {
 			await prefixes.delete(message.guild.id);
-			return message.channel.send(`My prefix for the server is RESET to: \`${defaultPrefix}\``);
+			return message.channel.send(`My prefix for the server is RESET to: \`${await getPrefix(message.guild)}\``);
 		}
 
 		// SET
 		await prefixes.set(message.guild.id, args[0]);
-		message.channel.send(`My prefix for the server is SET to: \`${args[0]}\``);
+		message.channel.send(`My prefix for the server is SET to: \`${await getPrefix(message.guild)}\``);
 	}
 };
 
-const { prefixes } = require('../global.js');
+const { prefixes, getPrefix } = require('../global.js');
 const { defaultPrefix } = require('../config.json');

@@ -5,7 +5,11 @@ module.exports = {
 	guildOnly: true,
 	execute(message, args) {
 		if (!connections.has(message.guild.id)) return message.channel.send('I wasn\'t even in any voice channel!');
-		connections.get(message.guild.id).disconnect();
+		const connection = connections.get(message.guild.id);
+		if (!message.member.voice.channel || connection.channel.id != message.member.voice.channel.id) {
+			return message.channel.send(`You must be in my voice channel to use \`${this.name}\`.`);
+		}
+		connection.disconnect();
 		connections.delete(message.guild.id);
 	}
 };

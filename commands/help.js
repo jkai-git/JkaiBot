@@ -3,16 +3,16 @@ module.exports = {
 	description: 'List all the commands or information about a specific command.',
 	usage: '(optional)<command name>',
 	aliases: ['commands', 'cmds'],
-	execute(message, args) {
+	async execute(message, args) {
 		const data = [];
-		
+
 		// if no args, send list of all commands to DM
 		if (!args.length) {
 			data.push('**List of all commands:**');
 			data.push(commands.map(command => command.name).join(', '));
 			data.push(`\nYou can try \`${Config.defaultPrefix}${this.name} <command name>\` to get info on a specific command.`);
 
-			return message.author.send('>>> ' + data.join('\n'), { split: true })
+			return message.author.send('>>> ' + data.join('\n'), { split: { prepend: '>>> ' } })
 				.then(() => {
 					if (message.channel.type === 'dm') return;
 					message.channel.send('I\'ve sent you a DM with all my commands!');
@@ -31,13 +31,13 @@ module.exports = {
 
 		data.push(`**Name:** ${command.name}`);
 		data.push(`**Description:** ${command.description}`);
-		if (command.usage) data.push(`**Usage:** ${Config.defaultPrefix}${command.name} ${command.usage}`);
+		if (command.usage) data.push(`**Usage:** ${await getPrefix(message.guild)}${command.name} ${command.usage}`);
 		if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
 		data.push(`**Cooldown:** ${command.cooldown || Config.defaultCooldown} second(s)`);
 
-		message.channel.send('>>> ' + data.join('\n'), { split: true, disableMentions: 'all' });
+		message.channel.send('>>> ' + data.join('\n'), { split: { prepend: '>>> ' } });
 	}
 };
 
-const { commands, findCommand } = require('../global.js');
+const { commands, getPrefix, findCommand } = require('../global.js');
 const Config = require('../config.json');

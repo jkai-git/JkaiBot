@@ -25,7 +25,7 @@ module.exports = {
 			const parsedArgs = await parseArguments(args, message.client, message.guild);
 			if (!parsedArgs) return message.channel.send('Something went wrong. It\'s probably an incorrect id.');
 			if (!parsedArgs.filter(arg => arg.type === 'user' || arg.type === 'member').length) {
-				return message.channel.send('Wrong argument(s). Use the \`help\` command.');
+				return message.channel.send(`Wrong argument(s). Use the \`${await getPrefix(message.guild)}help\` command.`);
 			}
 			parsedArgs.forEach(({ type, data }) => {
 				if (type === 'user') msg.push(infoString(data));
@@ -37,7 +37,7 @@ module.exports = {
 	}
 };
 
-const { parseArguments } = require('../global.js');
+const { parseArguments, getPrefix } = require('../global.js');
 
 const infoString = user => {
 	// Easter Eggs

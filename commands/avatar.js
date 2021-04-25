@@ -1,6 +1,6 @@
 module.exports = {
 	name: 'avatar',
-	description: 'Avatar lookup of mentioned users. (be careful with \`!avatar all\`)',
+	description: `Avatar lookup of mentioned users. (be careful with \`all\`)`,
 	usage: '(optional)all (optional)<mentions> (optional)<userIDs>',
 	aliases: ['pic', 'icon', 'pfp'],
 	cooldown: 3,
@@ -29,7 +29,7 @@ module.exports = {
 			const parsedArgs = await parseArguments(args, message.client, message.guild);
 			if (!parsedArgs) return message.channel.send('Something went wrong. It\'s probably an incorrect id.');
 			if (!parsedArgs.filter(arg => arg.type === 'user' || arg.type === 'member').length) {
-				return message.channel.send('Wrong argument(s). Use the \`help\` command.');
+				return message.channel.send(`Wrong argument(s). Use the \`${await getPrefix(message.guild)}help\` command.`);
 			}
 			parsedArgs.forEach(({type, data}) => {
 				if (type === 'user') avatarList.push({ name: data.tag, url: data.displayAvatarURL(avatarOptions)});
@@ -60,7 +60,7 @@ module.exports = {
 	}
 };
 
-const { parseArguments } = require('../global.js');
+const { parseArguments, getPrefix } = require('../global.js');
 
 const avatarOptions = {
 	format: 'png',

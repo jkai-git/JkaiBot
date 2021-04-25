@@ -18,7 +18,7 @@ module.exports = {
 
 		// Find command
 		const command = findCommand(args.shift());
-		if (!command) return;
+		if (!command) return message.channel.send(`That command does\'t exist. Try \`${await getPrefix(message.guild)}help\`.`);;
 
 		// guildOnly test
 		if (command.guildOnly && message.channel.type === 'dm') {
@@ -30,7 +30,7 @@ module.exports = {
 			let reply = 'No arguments were provided. :/';
 
 			if (command.usage) {
-				reply += `\nProper usage would be: \`${Config.defaultPrefix}${command.name} ${command.usage}\``;
+				reply += `\nProper usage would be: \`${await getPrefix(message.guild)}${command.name} ${command.usage}\``;
 			}
 
 			return message.channel.send(reply, { disableMentions: 'all' });
@@ -50,13 +50,13 @@ module.exports = {
 			// Minutes left
 			if (timeLeft > 60) {
 				const timeLeftString = (timeLeft / 60).toFixed();
-				return message.channel.send(`Please wait ${timeLeftString} minute(s) before using the \`${command.name}\` command.`);
+				return message.channel.send(`Please wait ${timeLeftString} minute(s) before using the \`${await getPrefix(message.guild)}${command.name}\` command.`);
 			}
 
 			// Seconds left
 			const timeLeftString = timeLeft.toFixed(1);
-			if (timeLeftString === '0.0') return message.channel.send(`Less than 0.1 seconds left before you can use the \`${command.name}\` command.`);
-			return message.channel.send(`Please wait ${timeLeftString} second(s) before using the \`${command.name}\` command.`);
+			if (timeLeftString === '0.0') return message.channel.send(`Less than 0.1 seconds left before you can use the \`${await getPrefix(message.guild)}${command.name}\` command.`);
+			return message.channel.send(`Please wait ${timeLeftString} second(s) before using the \`${await getPrefix(message.guild)}${command.name}\` command.`);
 		}
 
 		// If wasn't on cooldown then set cooldown
@@ -73,15 +73,14 @@ module.exports = {
 	}
 };
 
-const { commands, cooldowns, prefixes, findCommand } = require('../global.js');
+const { commands, cooldowns, prefixes, getPrefix, findCommand } = require('../global.js');
 const Config = require('../config.json');
 
 // To be able to use special characters in Regular Expressions
 const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 guildPrefixTest = async message => {
-	const guildPrefix = await prefixes.get(message.guild.id);
-	const prefix = guildPrefix ? guildPrefix : Config.defaultPrefix;
+	const prefix = await getPrefix(message.guild);
 	const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(prefix)})\\s*`);
 
 	if (!prefixRegex.test(message.content)) return undefined;

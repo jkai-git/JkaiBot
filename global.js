@@ -1,3 +1,4 @@
+const { defaultPrefix } = require('./config.json');
 const Discord = require('discord.js');
 const Keyv = require('keyv');
 
@@ -15,6 +16,9 @@ const regexId = /^\d{18}$/;
 const regexMention = /^<@!?(\d{18})>$/;
 
 // Functions
+const getPrefix = async guild => {
+	return guild ? await prefixes.get(guild.id) || defaultPrefix : defaultPrefix;
+}
 const findCommand = commandName => {
 	commandName = commandName.toLowerCase();
 	return commands.get(commandName) || commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
@@ -64,5 +68,5 @@ module.exports = {
 	// Regular Expressions
 
 	// Functions
-	findCommand, parseArguments
+	getPrefix, findCommand, parseArguments
 };

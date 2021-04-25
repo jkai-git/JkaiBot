@@ -73,7 +73,7 @@ module.exports = {
 	}
 };
 
-const { commands, cooldowns, prefixes, getPrefix, findCommand } = require('../global.js');
+const { commands, cooldowns, getPrefix, findCommand } = require('../global.js');
 const Config = require('../config.json');
 
 // To be able to use special characters in Regular Expressions

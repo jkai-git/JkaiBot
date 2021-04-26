@@ -18,7 +18,7 @@ module.exports = {
 		const videoDetails = video.videoDetails;
 		const videoThumbnail = videoDetails.thumbnails[videoDetails.thumbnails.length - 1];
 
-		connection.play(await Ytdl('https://www.youtube.com/watch?v=Zgi0Gzjxvjw', ytdlOptions), dispatcherOptions);
+		const dispatcher = connection.play(await Ytdl('https://www.youtube.com/watch?v=Zgi0Gzjxvjw', ytdlOptions), dispatcherOptions);
 
 		const start = Date.now();
 

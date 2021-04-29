@@ -63,9 +63,11 @@ module.exports = {
 		timestamps.set(message.author.id, now);
 		setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
+		if (command.delete) message.delete();
+
 		// Execute command
 		try {
-			command.execute(message, args);
+			await command.execute(message, args);
 		} catch(error) {
 			console.error(error);
 			message.channel.send('There was an error trying to execute this command!');

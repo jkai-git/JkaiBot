@@ -5,7 +5,6 @@ const Keyv = require('keyv');
 // Collections
 const commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
-const connections = new Discord.Collection();
 
 // Keyv Connections
 const prefixes = new Keyv(process.env.KEYV_CONNECTSTRING, { namespace: 'prefixes' });
@@ -60,7 +59,7 @@ const parseArguments = async (args, client, guild) => {
 
 module.exports = {
 	// Collections
-	commands, cooldowns, connections,
+	commands, cooldowns,
 
 	// Keyv Connections
 	prefixes,

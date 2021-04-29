@@ -44,14 +44,23 @@ const infoString = user => {
 	if (user.id === '132920751555608576') {
 		return `**Name:** ${user.username} (P3tfacepol)\n`
 			  +`**Tag:** ${user.tag}\n`
-			  +`**id:** +3630720||elhitted||\n`
-			  +`**Created at:** ${user.createdAt}\n`
-			  +`**Penis size:** Úristen very big\n`;
+			  +`**ID:** ${user.id}\n`
+			  +`**Phone:** +3630720||elhitted||\n`
+			  +`**Penis size:** Úristen very big\n`
+			  +`**Created at:** ${user.createdAt}\n`;
+	}
+	if (user.id === '139399979742527488') {
+		return `**Name:** ${user.username} (Kajasvok)\n`
+			  +`**Tag:** ${user.tag}\n`
+			  +`**ID:** ${user.id}\n`
+			  +`**Species:** Alpaca / Vicugna pacos\n`
+			  +`**Colour:** Pink\n`
+			  +`**Created at:** ${user.createdAt}\n`;
 	}
 
 	// Default Infos
 	return `**Name:** ${user.username}\n`
 		  +`**Tag:** ${user.tag}\n`
-		  +`**id:** ${user.id}\n`
+		  +`**ID:** ${user.id}\n`
 		  +`**Created at:** ${user.createdAt}\n`;
 }

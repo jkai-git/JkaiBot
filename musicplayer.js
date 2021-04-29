@@ -139,25 +139,14 @@ const addToQueue = async (music, message, channel) => {
 		  	key: process.env.YOUTUBE_APIKEY,
 		  	type: 'video'
 		};
-		Search(music.join(' '), opts, async (err, results) => {
-		  	if (err) {
-				fail = true;
-				console.error('Youtube Search error! \n', err);
-				return;
-			}
 
-			/*
-			try {
-				video = await Ytdl.getBasicInfo(results[0].link);
-			} catch(error) {
-				console.error('addToQueue error! \n', error);
-				fail = true;
-				return;
-			}
-			*/
-
-		  	console.dir(results);
-		});
+		try {
+			const data = await Search(music.join(' '), opts);
+			video = await Ytdl.getBasicInfo(data.results[0].link);
+		} catch(error) {
+			fail = true;
+			console.error('Youtube Search error! \n', error);
+		}
 	}
 
 	if (fail) connection.queue.push({ sender: message.member.displayName, data: null });

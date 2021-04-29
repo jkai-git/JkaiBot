@@ -36,7 +36,7 @@ const playerEmbed = connection => {
 			.setColor('#FFFFFE')
 			.setTitle('Music Player Connected')
 			.setAuthor(`provided by ${client.user.tag}`, client.user.displayAvatarURL())
-			.setDescription('▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\nwaiting for input...')
+			.setDescription(connection.playerStatus)
 			.setThumbnail(client.user.displayAvatarURL());
 	}
 }
@@ -94,11 +94,6 @@ const buildPlayer = async channel => {
 		const msg = await channel.send(playerEmbed(connection));
 		connection.messages.set('player', msg);
 		activateMenu(msg);
-
-		if (connection.queue.length) {
-			const msg2 = await channel.send(lastInQueueEmbed(connection));
-			connection.messages.set('lastInQueue', msg2);
-		}
 	} catch(error) {
 		console.error('MusicPlayer.buildPlayer error: \n', error);
 	}
@@ -113,9 +108,6 @@ const updatePlayer = (type, connection) => {
 			break;
 		case 'queue':
 // later
-			break;
-		case 'lastInQueue':
-// later, also build lastInQueue if it isnt and there is something in queue, also delete if queue empty
 			break;
 	}
 }
@@ -155,7 +147,6 @@ const addToQueue = async (music, message, channel) => {
 	}
 
 	updatePlayer('queue', connection);
-	updatePlayer('lastInQueue', connection);
 
 	if (!connection.dispatcher) await play(channel);
 }

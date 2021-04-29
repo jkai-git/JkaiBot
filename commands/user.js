@@ -53,7 +53,7 @@ const infoString = user => {
 		return `**Name:** ${user.username} (Kajasvok)\n`
 			  +`**Tag:** ${user.tag}\n`
 			  +`**ID:** ${user.id}\n`
-			  +`**Species:** Alpaca / Vicugna pacos\n`
+			  +`**Species:** Llama / Lama glama\n`
 			  +`**Colour:** Pink\n`
 			  +`**Created at:** ${user.createdAt}\n`;
 	}

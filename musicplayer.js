@@ -25,18 +25,18 @@ const playerEmbed = connection => {
 		const videoDetails = connection.queue[0].data.videoDetails;
 		const videoThumbnail = videoDetails.thumbnails[videoDetails.thumbnails.length - 1];
 		return new Discord.MessageEmbed()
-			.setColor('#06AED5')
-			.setTitle(videoDetails.title)
-			.setURL(videoDetails.video_url)
+			.setColor(connection.dispatcher.paused ? '#DB995A' : '#06AED5')
+			.setTitle(connection.dispatcher.paused ? 'Music Player Paused' : videoDetails.title)
+			.setURL(connection.dispatcher.paused ? '' : videoDetails.video_url)
 			.setAuthor(videoDetails.author.name, videoDetails.author.thumbnails[videoDetails.author.thumbnails.length - 1].url, videoDetails.author.channel_url)
-			.setDescription(connection.playerStatus)
+			.setDescription('▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n' + connection.playerStatus)
 			.setThumbnail(`https://cdn.filestackcontent.com/${process.env.FILESTACK_APIKEY}/resize=width:${videoThumbnail.height},height:${videoThumbnail.height},fit:crop/${videoThumbnail.url}`);
 	} else {
 		return new Discord.MessageEmbed()
 			.setColor('#FFFFFE')
 			.setTitle('Music Player Connected')
 			.setAuthor(`provided by ${client.user.tag}`, client.user.displayAvatarURL())
-			.setDescription(connection.playerStatus)
+			.setDescription('▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n' + connection.playerStatus)
 			.setThumbnail(client.user.displayAvatarURL());
 	}
 }
@@ -46,12 +46,16 @@ const reAlignPlayer = () => {
 }
 
 const reactionResponse = react => {
+	const connection = connections.get(react.message.guild.id);
 	switch(react.emoji.name) {
 		case '⏮':
 
 			break;
 		case '⏯':
-
+			if (connection.dispatcher) {
+				connection.dispatcher.paused ? connection.dispatcher.resume() : connection.dispatcher.pause();
+				updatePlayer('player', connection);
+			}
 			break;
 		case '⏭':
 
@@ -141,11 +145,16 @@ const addToQueue = async (music, message, channel) => {
 		}
 	}
 
-	if (fail) connection.queue.push({ sender: message.member.displayName, data: null });
+	if (fail) {
+		connection.queue.push({ sender: message.member.displayName, data: null });
+		connection.playerStatus = `[${message.member.displayName}] couldn't find your video!`;
+	}
 	else {
 		connection.queue.push({ sender: message.member.displayName, data: video });
+		connection.playerStatus = `[${message.member.displayName}] queued: ${video.videoDetails.title}`;
 	}
 
+	updatePlayer('player', connection);
 	updatePlayer('queue', connection);
 
 	if (!connection.dispatcher) await play(channel);
@@ -165,8 +174,8 @@ const join = async channel => {
 
 	connection.messages = new Discord.Collection();
 	connection.queue = [];
+	connection.playerStatus = 'waiting for input...';
 	connection.timeout = setTimeout(connection => connection.disconnect(), 120000, connection);
-	connection.playerStatus = '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\nwaiting for input...';
 
 	connection.once('disconnect', () => {
 		connection.messages.each(msg => msg.delete());
@@ -182,7 +191,6 @@ const play = async channel => {
 	if (!connection.queue.length) {
 		clearTimeout(connection.timeout);
 		connection.timeout = setTimeout(connection => connection.disconnect(), 120000, connection);
-		connection.playerStatus = '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\nwaiting for input...';
 		updatePlayer('player', connection);
 		return;
 	}
@@ -198,8 +206,6 @@ const play = async channel => {
 		connection.queue.shift();
 		play(channel);
 	});
-
-	connection.playerStatus = '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\nplaying music...';
 
 	updatePlayer('player', connection);
 	updatePlayer('queue', connection);

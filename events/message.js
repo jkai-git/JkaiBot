@@ -7,9 +7,8 @@ module.exports = {
 		// Split message to arguments and prefix test
 		// In guild you can use: @mention && (defaultPrefix || guildPrefix)
 		// In DM you can use: command without prefix && @mention && defaultPrefix
-		let args;
-		if (message.guild) args = await guildPrefixTest(message);
-		else args = dmPrefixTest(message);
+		const args = await prefixTest(message);
+
 		// no valid prefix found
 		if (!args) return;
 
@@ -63,6 +62,7 @@ module.exports = {
 		timestamps.set(message.author.id, now);
 		setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
+		// Delete the message sent by the user
 		if (command.delete) message.delete();
 
 		// Execute command
@@ -81,25 +81,28 @@ const Config = require('../config.json');
 // To be able to use special characters in Regular Expressions
 const escapeRegex = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-guildPrefixTest = async message => {
-	const prefix = await getPrefix(message.guild);
-	const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(prefix)})\\s*`);
+const prefixTest = async message => {
+	// PrefixTest in Guilds
+	if (message.guild) {
+		const prefix = await getPrefix(message.guild);
+		const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(prefix)})\\s*`);
 
-	if (!prefixRegex.test(message.content)) return undefined;
+		if (!prefixRegex.test(message.content)) return undefined;
 
-	const [, matchedPrefix] = message.content.match(prefixRegex);
-	return message.content.slice(matchedPrefix.length).trim().split(/\s+/);
-}
-
-dmPrefixTest = message => {
-	const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(Config.defaultPrefix)})\\s*`);
-
-	let sliceLength;
-	if (!prefixRegex.test(message.content)) sliceLength = 0;
-	else {
 		const [, matchedPrefix] = message.content.match(prefixRegex);
-		sliceLength = matchedPrefix.length;
+		return message.content.slice(matchedPrefix.length).trim().split(/\s+/);
 	}
+	// PrefixTest in DMs
+	else {
+		const prefixRegex = new RegExp(`^(<@!?${message.client.user.id}>|${escapeRegex(Config.defaultPrefix)})\\s*`);
 
-	return message.content.slice(sliceLength).trim().split(/\s+/);
+		let sliceLength;
+		if (!prefixRegex.test(message.content)) sliceLength = 0;
+		else {
+			const [, matchedPrefix] = message.content.match(prefixRegex);
+			sliceLength = matchedPrefix.length;
+		}
+
+		return message.content.slice(sliceLength).trim().split(/\s+/);
+	}
 }

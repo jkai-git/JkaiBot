@@ -24,10 +24,12 @@ const playerEmbed = connection => {
 	if (connection.queue.length && connection.queue[0].data) {
 		const videoDetails = connection.queue[0].data.videoDetails;
 		const videoThumbnail = videoDetails.thumbnails[videoDetails.thumbnails.length - 1];
+		//const isPaused = connection.dispatcher ? connection.dispatcher.paused : false;
+		const isPaused = connection.dispatcher.paused;
 		return new Discord.MessageEmbed()
-			.setColor(connection.dispatcher.paused ? '#DB995A' : '#06AED5')
-			.setTitle(connection.dispatcher.paused ? 'Music Player Paused' : videoDetails.title)
-			.setURL(connection.dispatcher.paused ? '' : videoDetails.video_url)
+			.setColor(isPaused ? '#DB995A' : '#06AED5')
+			.setTitle(isPaused ? 'Music Player Paused' : videoDetails.title)
+			.setURL(isPaused ? '' : videoDetails.video_url)
 			.setAuthor(videoDetails.author.name, videoDetails.author.thumbnails[videoDetails.author.thumbnails.length - 1].url, videoDetails.author.channel_url)
 			.setDescription('▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n' + connection.playerStatus)
 			.setThumbnail(`https://cdn.filestackcontent.com/${process.env.FILESTACK_APIKEY}/resize=width:${videoThumbnail.height},height:${videoThumbnail.height},fit:crop/${videoThumbnail.url}`);
@@ -83,6 +85,7 @@ const activateMenu = async message => {
 		for (const react of menuReacts) {
 			await message.react(react);
 		}
+
 		const reactionCollector = message.createReactionCollector(menuReactionFilter, { dispose: true });
 		reactionCollector.on('collect', react => reactionResponse(react));
 		reactionCollector.on('remove', react => reactionResponse(react));
@@ -154,10 +157,10 @@ const addToQueue = async (music, message, channel) => {
 		connection.playerStatus = `[${message.member.displayName}] queued: ${video.videoDetails.title}`;
 	}
 
+	if (!connection.dispatcher) await play(channel);
+
 	updatePlayer('player', connection);
 	updatePlayer('queue', connection);
-
-	if (!connection.dispatcher) await play(channel);
 }
 
 const join = async channel => {

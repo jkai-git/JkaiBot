@@ -31,5 +31,3 @@ module.exports = {
 
 const { getPrefix } = require('../global.js');
 const Player = require('../musicplayer.js');
-
-const timeFormatter = secs => new Date(secs * 1000).toISOString().substr(11, 8);

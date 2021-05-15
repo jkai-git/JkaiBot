@@ -21,11 +21,10 @@ const dispatcherOptions = {
 };
 
 const playerEmbed = connection => {
+	const isPaused = connection.paused;
 	if (connection.queue.length && connection.queue[0].data) {
 		const videoDetails = connection.queue[0].data.videoDetails;
 		const videoThumbnail = videoDetails.thumbnails[videoDetails.thumbnails.length - 1];
-		//const isPaused = connection.dispatcher ? connection.dispatcher.paused : false;
-		const isPaused = connection.dispatcher.paused;
 		return new Discord.MessageEmbed()
 			.setColor(isPaused ? '#DB995A' : '#06AED5')
 			.setTitle(isPaused ? 'Music Player Paused' : videoDetails.title)
@@ -35,8 +34,8 @@ const playerEmbed = connection => {
 			.setThumbnail(`https://cdn.filestackcontent.com/${process.env.FILESTACK_APIKEY}/resize=width:${videoThumbnail.height},height:${videoThumbnail.height},fit:crop/${videoThumbnail.url}`);
 	} else {
 		return new Discord.MessageEmbed()
-			.setColor('#FFFFFE')
-			.setTitle('Music Player Connected')
+			.setColor(isPaused ? '#DB995A' : '#FFFFFE')
+			.setTitle(isPaused ? 'Music Player Paused' : 'Music Player Connected')
 			.setAuthor(`provided by ${client.user.tag}`, client.user.displayAvatarURL())
 			.setDescription('▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n' + connection.playerStatus)
 			.setThumbnail(client.user.displayAvatarURL());
@@ -54,13 +53,19 @@ const reactionResponse = react => {
 
 			break;
 		case '⏯':
+			connection.paused = !connection.paused;
 			if (connection.dispatcher) {
-				connection.dispatcher.paused ? connection.dispatcher.resume() : connection.dispatcher.pause();
+				!connection.paused ? connection.dispatcher.resume() : connection.dispatcher.pause();
 				updatePlayer('player', connection);
 			}
+			else if (!connection.paused) play(react.message.channel);
+			else updatePlayer('player', connection);
 			break;
 		case '⏭':
-
+			if (connection.dispatcher) {
+				connection.dispatcher.end();
+				if (connection.paused) updatePlayer('player', connection);
+			}
 			break;
 		case '🔀':
 
@@ -160,7 +165,6 @@ const addToQueue = async (music, message, channel) => {
 	if (!connection.dispatcher) await play(channel);
 
 	updatePlayer('player', connection);
-	updatePlayer('queue', connection);
 }
 
 const join = async channel => {
@@ -177,8 +181,9 @@ const join = async channel => {
 
 	connection.messages = new Discord.Collection();
 	connection.queue = [];
+	connection.paused = false;
 	connection.playerStatus = 'waiting for input...';
-	connection.timeout = setTimeout(connection => connection.disconnect(), 120000, connection);
+	connection.timeout = setTimeout(connection => connection.disconnect(), 300000, connection);
 
 	connection.once('disconnect', () => {
 		connection.messages.each(msg => msg.delete());
@@ -193,7 +198,7 @@ const play = async channel => {
 
 	if (!connection.queue.length) {
 		clearTimeout(connection.timeout);
-		connection.timeout = setTimeout(connection => connection.disconnect(), 120000, connection);
+		connection.timeout = setTimeout(connection => connection.disconnect(), 300000, connection);
 		updatePlayer('player', connection);
 		return;
 	}
@@ -203,15 +208,18 @@ const play = async channel => {
 		return;
 	}
 
-	const stream = await Ytdl(connection.queue[0].data.videoDetails.video_url, ytdlOptions);
-	const dispatcher = connection.play(stream, dispatcherOptions);
-	dispatcher.once('finish', () => {
-		connection.queue.shift();
-		play(channel);
-	});
+	if (!connection.paused) {
+		const stream = await Ytdl(connection.queue[0].data.videoDetails.video_url, ytdlOptions);
+		const dispatcher = connection.play(stream, dispatcherOptions);
+		dispatcher.once('finish', () => {
+			connection.queue.shift();
+			play(channel);
+		});
+	}
+
+	if (connection.queue.length === 1) connection.playerStatus = 'waiting for input...';
 
 	updatePlayer('player', connection);
-	updatePlayer('queue', connection);
 }
 
 const isJoined = guildID => {

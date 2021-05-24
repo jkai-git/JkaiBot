@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jkai-git/JkaiBot.git"
+    "url": "git+https://github.com/jkai-git/JkaiBot.git"
   },
   "keywords": [
     "jkaibot",
@@ -18,7 +18,7 @@
     "bot"
   ],
   "author": "Jkai",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/jkai-git/JkaiBot/issues"
   },
